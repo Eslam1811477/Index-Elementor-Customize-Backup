@@ -1,8 +1,8 @@
-# Elementor & Customize Backup Plugin
+# Index Elementor & Customize Backup Plugin
 
 ## Overview
 
-The **Elementor & Customize Backup** plugin is a WordPress plugin designed to create a backup of your Elementor designs and Customize settings. The backup is saved as a JSON file, which can later be used to restore the settings or transfer them to another site.
+The **Index Elementor & Customize Backup** plugin is a WordPress plugin designed to create a backup of your Elementor designs and Customize settings. The backup is saved as a JSON file, which can later be used to restore the settings or transfer them to another site.
 
 ## Features
 
@@ -53,7 +53,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Credits
 
-- **Author**: Your Name
+- **Author**: E477
 - **Version**: 1.0
 - **License**: MIT
 
