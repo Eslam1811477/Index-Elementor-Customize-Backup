@@ -7,10 +7,11 @@ Author: E477
 */
 
 if (!defined('ABSPATH')) {
-    exit; 
+    exit;
 }
 
-function backup_elementor_and_customize_data() {
+function backup_elementor_and_customize_data()
+{
     global $wpdb;
 
     $elementor_posts = $wpdb->get_results("SELECT * FROM {$wpdb->posts} WHERE post_content LIKE '%elementor%'");
@@ -37,22 +38,41 @@ function backup_elementor_and_customize_data() {
     return $upload_dir['baseurl'] . '/elementor_customize_backup.json';
 }
 
-add_action('admin_menu', function() {
+add_action('admin_menu', function () {
     add_menu_page(
         'Index Elementor & Customize Backup',
-        'Index Backup',            
-        'manage_options',              
-        'elementor-customize-backup',  
-        'render_backup_page',          
-        'dashicons-backup',            
-        80                             
+        'Index Backup',
+        'manage_options',
+        'elementor-customize-backup',
+        'render_backup_page',
+        'dashicons-backup',
+        80
     );
 });
 
-function render_backup_page() {
+function render_backup_page()
+{
     if (isset($_POST['backup'])) {
         $backup_url = backup_elementor_and_customize_data();
         echo "<div class='notice notice-success'><p>Backup created successfully. <a href='{$backup_url}' target='_blank'>Download Backup</a></p></div>";
+
+        $json_data = file_get_contents($backup_url);
+
+        $response = wp_remote_post('http://localhost:3000/api/templates', [
+            'method'    => 'POST',
+            'headers'   => [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJmMGUwMDQ2MTc2NTk3MGQyOWY1M2IiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJlQGluZGV4LmNvbSIsImlhdCI6MTcyMzc5Njk5M30.giIn1KxbNaBKFXf7Uz48MtCuMw8HF1klknENQzDImuw',
+            ],
+            'body'        => array(
+                'username' => 'bob',
+                'password' => '1234xyz'
+            ),
+        ]);
+
+        if (is_wp_error($response)) {
+            error_log('Error sending request to API: ' . $response->get_error_message());
+        }
     }
 
     echo '<div class="wrap">';
