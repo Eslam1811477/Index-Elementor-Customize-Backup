@@ -21,6 +21,10 @@ function backup_elementor_and_customize_data()
     $theme_slug = get_option('stylesheet');
     $customize_options = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->options} WHERE option_name LIKE %s", "theme_mods_{$theme_slug}"));
 
+
+
+    // $elementor_posts = str_replace('', '', $elementor_posts);
+
     $backup_data = [
         'elementor_posts' => $elementor_posts,
         'elementor_meta' => $elementor_meta,
