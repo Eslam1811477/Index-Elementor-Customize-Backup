@@ -6,8 +6,6 @@ Version: 1.0
 Author: E477
 */
 
-use function PHPSTORM_META\type;
-
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -16,28 +14,34 @@ function backup_elementor_and_customize_data()
 {
     global $wpdb;
 
-    $elementor_posts = $wpdb->get_results("SELECT * FROM {$wpdb->posts} WHERE post_content LIKE '%elementor%'");
-    $elementor_meta = $wpdb->get_results("SELECT * FROM {$wpdb->postmeta} WHERE post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_content LIKE '%elementor%')");
+    // استرجاع جميع المنشورات والصفحات
+    $all_posts = $wpdb->get_results("SELECT * FROM {$wpdb->posts} WHERE post_type IN ('post', 'page') AND post_status = 'publish'");
+    
+    // استرجاع بيانات الميتا لجميع المنشورات والصفحات
+    $all_meta = $wpdb->get_results("SELECT * FROM {$wpdb->postmeta} WHERE post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('post', 'page'))");
+
+    // استرجاع إعدادات Elementor
     $elementor_options = $wpdb->get_results("SELECT * FROM {$wpdb->options} WHERE option_name LIKE 'elementor%'");
 
+    // استرجاع إعدادات Customize
     $theme_slug = get_option('stylesheet');
     $customize_options = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->options} WHERE option_name LIKE %s", "theme_mods_{$theme_slug}"));
 
-
-
-
-    $backup_data = [
-        'elementor_posts' => $elementor_posts,
-        'elementor_meta' => $elementor_meta,
+    // دمج جميع البيانات في مصفوفة واحدة
+    $elementor_posts = [
+        'all_posts' => $all_posts,
+        'all_meta' => $all_meta,
         'elementor_options' => $elementor_options,
         'customize_options' => $customize_options
     ];
 
-    $backup_json = json_encode($backup_data, JSON_PRETTY_PRINT);
+    // تحويل البيانات إلى JSON
+    $backup_json = json_encode($elementor_posts, JSON_PRETTY_PRINT);
 
+    // استبدال localhost بالنص المطلوب
     $backup_json = str_replace('localhost', '{{{[index_iuu_siteURL]}}}', $backup_json);
 
-
+    // حفظ النسخة الاحتياطية في مجلد uploads
     $upload_dir = wp_upload_dir();
     $backup_file = $upload_dir['basedir'] . '/elementor_customize_backup.json';
 
@@ -64,6 +68,7 @@ function render_backup_page()
         $backup_url = backup_elementor_and_customize_data();
         echo "<div class='notice notice-success'><p>Backup created successfully. <a href='{$backup_url}' target='_blank'>Download Backup</a></p></div>";
 
+        // إرسال النسخة الاحتياطية إلى API خارجي
         $json_data = file_get_contents($backup_url);
 
         $response = wp_remote_post('http://localhost:3000/api/templates', [
