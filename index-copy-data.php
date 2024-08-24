@@ -6,6 +6,8 @@ Version: 1.0
 Author: E477
 */
 
+use function PHPSTORM_META\type;
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -23,7 +25,6 @@ function backup_elementor_and_customize_data()
 
 
 
-    // $elementor_posts = str_replace('', '', $elementor_posts);
 
     $backup_data = [
         'elementor_posts' => $elementor_posts,
@@ -33,6 +34,9 @@ function backup_elementor_and_customize_data()
     ];
 
     $backup_json = json_encode($backup_data, JSON_PRETTY_PRINT);
+
+    $backup_json = str_replace('localhost', '{{{[index_iuu_siteURL]}}}', $backup_json);
+
 
     $upload_dir = wp_upload_dir();
     $backup_file = $upload_dir['basedir'] . '/elementor_customize_backup.json';
