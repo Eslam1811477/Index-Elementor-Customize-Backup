@@ -35,7 +35,6 @@ function backup_elementor_and_customize_data()
     }
 
     // استخراج إعدادات Customize (المحفوظة في wp_options)
-    $theme_slug = get_option('stylesheet');
     $customize_options = get_theme_mods();
 
     // استخراج إعدادات Widgets
@@ -58,6 +57,9 @@ function backup_elementor_and_customize_data()
     // تحويل البيانات إلى JSON
     $backup_json = json_encode($backup_data, JSON_PRETTY_PRINT);
 
+    if($backup_json){
+        $backup_json = str_replace('localhost','{{{[index_iuu_siteURL]}}}',$backup_json);
+    }
     // حفظ النسخة الاحتياطية في مجلد uploads
     $upload_dir = wp_upload_dir();
     $backup_file = $upload_dir['basedir'] . '/elementor_customize_backup.json';
