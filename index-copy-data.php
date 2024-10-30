@@ -48,10 +48,7 @@ function backup_elementor_and_customize_data()
     // دمج جميع البيانات في مصفوفة واحدة
     $backup_data = [
         'all_posts' => $all_posts,
-        'all_meta' => $all_meta,
-        'elementor_options' => $elementor_options,
         'customize_options' => $customize_options,
-        'widgets' => $widgets,
     ];
 
     // تحويل البيانات إلى JSON
