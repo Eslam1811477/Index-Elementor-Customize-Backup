@@ -19,11 +19,17 @@ function backup_elementor_and_customize_data()
         'numberposts' => -1,
     ]);
 
-    // استخراج الميتا المتعلقة بـ Elementor لكل صفحة
-    $all_meta = [];
+
     foreach ($all_posts as $post) {
-        $post_meta = get_post_meta($post->ID);
-        $all_meta[$post->ID] = $post_meta;
+        $id = $post->ID;
+        $post->_elementor_data = get_post_meta($id,'_elementor_data',true);
+        $post->_elementor_edit_mode = get_post_meta($id,'_elementor_edit_mode',true);
+        $post->_elementor_template_type = get_post_meta($id,'_elementor_template_type',true);
+        $post->_elementor_controls_usage = get_post_meta($id,'_elementor_controls_usagee',true);
+        $post->_elementor_page_settings = get_post_meta($id,'_elementor_page_settings',true);
+        $post->_elementor_css = get_post_meta($id,'_elementor_css',true);
+        $post->_wp_page_template = get_post_meta($id,'_wp_page_template',true);
+        $post->_edit_lock = get_post_meta($id,'_edit_lock',true);
     }
 
     // استخراج إعدادات Elementor (التي يتم حفظها في wp_options)
