@@ -14,7 +14,7 @@ function backup_elementor_and_customize_data()
 {
     // استخراج جميع الصفحات المصممة بـ Elementor
     $all_posts = get_posts([
-        'post_type' => ['page', 'post'],
+        'post_type' => ['page', 'post', 'revision'],
         'post_status' => 'publish',
         'numberposts' => -1,
     ]);
@@ -22,14 +22,14 @@ function backup_elementor_and_customize_data()
 
     foreach ($all_posts as $post) {
         $id = $post->ID;
-        $post->_elementor_data = get_post_meta($id,'_elementor_data',true);
-        $post->_elementor_edit_mode = get_post_meta($id,'_elementor_edit_mode',true);
-        $post->_elementor_template_type = get_post_meta($id,'_elementor_template_type',true);
-        $post->_elementor_controls_usage = get_post_meta($id,'_elementor_controls_usagee',true);
-        $post->_elementor_page_settings = get_post_meta($id,'_elementor_page_settings',true);
-        $post->_elementor_css = get_post_meta($id,'_elementor_css',true);
-        $post->_wp_page_template = get_post_meta($id,'_wp_page_template',true);
-        $post->_edit_lock = get_post_meta($id,'_edit_lock',true);
+        $post->_elementor_data = get_post_meta($id, '_elementor_data', true);
+        $post->_elementor_edit_mode = get_post_meta($id, '_elementor_edit_mode', true);
+        $post->_elementor_template_type = get_post_meta($id, '_elementor_template_type', true);
+        $post->_elementor_controls_usage = get_post_meta($id, '_elementor_controls_usagee', true);
+        $post->_elementor_page_settings = get_post_meta($id, '_elementor_page_settings', true);
+        $post->_elementor_css = get_post_meta($id, '_elementor_css', true);
+        $post->_wp_page_template = get_post_meta($id, '_wp_page_template', true);
+        $post->_edit_lock = get_post_meta($id, '_edit_lock', true);
     }
 
     // استخراج إعدادات Elementor (التي يتم حفظها في wp_options)
@@ -60,8 +60,8 @@ function backup_elementor_and_customize_data()
     // تحويل البيانات إلى JSON
     $backup_json = json_encode($backup_data, JSON_PRETTY_PRINT);
 
-    if($backup_json){
-        $backup_json = str_replace('localhost','{{{[index_iuu_siteURL]}}}',$backup_json);
+    if ($backup_json) {
+        $backup_json = str_replace('localhost', '{{{[index_iuu_siteURL]}}}', $backup_json);
     }
     // حفظ النسخة الاحتياطية في مجلد uploads
     $upload_dir = wp_upload_dir();
@@ -88,7 +88,7 @@ function render_backup_page()
 {
     if (isset($_POST['backup'])) {
         $backup_url = backup_elementor_and_customize_data();
-        echo "<div class='notice notice-success'><p>Backup created successfully. <a href='". $backup_url ."' target='_blank'>Download Backup</a></p>";
+        echo "<div class='notice notice-success'><p>Backup created successfully. <a href='" . $backup_url . "' target='_blank'>Download Backup</a></p>";
     }
 
     echo '<div class="wrap">';
