@@ -14,10 +14,19 @@ function backup_elementor_and_customize_data()
 {
     // استخراج جميع الصفحات المصممة بـ Elementor
     $all_posts = get_posts([
-        'post_type' => ['page', 'post', 'revision'],
+        'post_type' => ['page', 'post'],
         'post_status' => 'publish',
         'numberposts' => -1,
     ]);
+
+    $footer_id = Index_Layout::get_default_footer()->renderId;
+    if($footer_id){
+        $footer = get_post($footer_id);
+        $footer->is_footer = true;
+        array_push($all_posts,$footer);
+    }
+
+
 
 
     foreach ($all_posts as $post) {
@@ -27,9 +36,12 @@ function backup_elementor_and_customize_data()
         $post->_elementor_template_type = get_post_meta($id, '_elementor_template_type', true);
         $post->_elementor_controls_usage = get_post_meta($id, '_elementor_controls_usagee', true);
         $post->_elementor_page_settings = get_post_meta($id, '_elementor_page_settings', true);
-        $post->_elementor_css = get_post_meta($id, '_elementor_css', true);
+        $post->_elementor_css = json_encode(get_post_meta($id, '_elementor_css', true));
         $post->_wp_page_template = get_post_meta($id, '_wp_page_template', true);
         $post->_edit_lock = get_post_meta($id, '_edit_lock', true);
+        if(!isset($post->is_footer)){
+            $post->is_footer = false;
+        }
     }
 
     // استخراج إعدادات Elementor (التي يتم حفظها في wp_options)
