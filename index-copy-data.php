@@ -12,7 +12,6 @@ if (!defined('ABSPATH')) {
 
 function backup_elementor_and_customize_data()
 {
-    // استخراج جميع الصفحات المصممة بـ Elementor
     $all_posts = get_posts([
         'post_type' => ['page', 'post'],
         'post_status' => 'publish',
@@ -44,7 +43,6 @@ function backup_elementor_and_customize_data()
         }
     }
 
-    // استخراج إعدادات Elementor (التي يتم حفظها في wp_options)
     $elementor_options = [];
     foreach (wp_load_alloptions() as $option_name => $option_value) {
         if (strpos($option_name, 'elementor') === 0) {
@@ -52,10 +50,8 @@ function backup_elementor_and_customize_data()
         }
     }
 
-    // استخراج إعدادات Customize (المحفوظة في wp_options)
     $customize_options = get_theme_mods();
 
-    // استخراج إعدادات Widgets
     $widgets = [];
     foreach (wp_load_alloptions() as $option_name => $option_value) {
         if (strpos($option_name, 'widget_') === 0) {
@@ -63,19 +59,16 @@ function backup_elementor_and_customize_data()
         }
     }
 
-    // دمج جميع البيانات في مصفوفة واحدة
     $backup_data = [
         'all_posts' => $all_posts,
         'customize_options' => $customize_options,
     ];
 
-    // تحويل البيانات إلى JSON
     $backup_json = json_encode($backup_data, JSON_PRETTY_PRINT);
 
     if ($backup_json) {
         $backup_json = str_replace('localhost', '{{{[index_iuu_siteURL]}}}', $backup_json);
     }
-    // حفظ النسخة الاحتياطية في مجلد uploads
     $upload_dir = wp_upload_dir();
     $backup_file = $upload_dir['basedir'] . '/elementor_customize_backup.json';
 
